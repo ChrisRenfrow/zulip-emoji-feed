@@ -1,0 +1,29 @@
+---
+const { value, icon = true } = Astro.props
+---
+
+<div class="inline">
+  <input
+    type="text"
+    readonly
+    value={value}
+    class="one-click-select font-mono bg-gray-200 rounded-sm text-sm py-0.5 px-1 cursor-copy"
+    title="Click to copy to the clipboard"
+  />
+  {icon && <span>📋</span>}
+</div>
+
+<script>
+  const easySelectFields = document.querySelectorAll('input.one-click-select')
+
+  easySelectFields.forEach((field) => {
+    field.addEventListener('click', () => {
+      if (field instanceof HTMLInputElement) {
+        field.select()
+        navigator.clipboard.writeText(field.value).catch((err) => {
+          console.error('Failed to copy text: ', err)
+        })
+      }
+    })
+  })
+</script>

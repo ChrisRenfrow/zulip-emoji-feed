@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import EasySelectField from './EasySelectField.astro'
+import FormattedDate from './FormattedDate.astro'
+
+interface Props {
+  emoji: CollectionEntry<'emojis'>
+}
+
+const { emoji } = Astro.props as Props
+---
+
+<div
+  class="p-2 bg-gray-100 w-80 h-40 rounded-md flex flex-row content-center justify-center"
+>
+  <img class="p-3 m-auto grow" src={emoji.data.source_url} />
+  <div class="m-auto flex flex-col">
+    <EasySelectField value={`:${emoji.data.name}:`} icon={false} />
+    <div>id: <span>{emoji.data.id}</span></div>
+    <div>
+      first_seen: <FormattedDate date={new Date(emoji.data.first_seen)} />
+    </div>
+    <div>author: <span>{emoji.data.author_id}</span></div>
+  </div>
+</div>

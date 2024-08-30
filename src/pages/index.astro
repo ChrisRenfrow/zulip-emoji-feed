@@ -1,16 +1,47 @@
 ---
+import { getCollection } from 'astro:content'
+import EmojiCard from '../components/EmojiCard.astro'
+import EasySelectField from '../components/EasySelectField.astro'
 
+const title = 'Zulip Custom Emoji Feed'
+const org_name = 'RC'
+
+const emojis = (await getCollection('emojis', ({ data }) => !data.deactivated))
+  .slice(-50)
+  .sort((a, b) => Number(b.data.id) - Number(a.data.id))
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | {org_name}</title>
+  </head>
+  <body class="my-10 md:my-20 md:w-2/3 px-5 md:px-0 mx-auto">
+    <div class="flex flex-col">
+      <div class="flex flex-col space-y-6 pb-10 md:pb-20">
+        <div class="pb-5">
+          <h1 class="text-4xl pb-2 font-bold">{title}</h1>
+          <h3 class="text-gray-800 text-2xl">for {org_name}</h3>
+        </div>
+        <p class="text-xl">
+          This site hosts an RSS feed containing the 50 latest custom emojis to
+          have been added to {org_name}'s Zulip instance. To get notified of new
+          emojis, use your favorite RSS reader or bot integration to subscribe
+          to the url below.
+        </p>
+        <EasySelectField value={`${Astro.site}/feed.xml`} />
+      </div>
+      <div>
+        <h2 class="text-3xl pb-4 font-bold">Gallery</h2>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {emojis.map((emoji) => <EmojiCard {emoji} />)}
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
+
+<script></script>

@@ -1,47 +1,9 @@
-# Astro Starter Kit: Minimal
+# Zulip Emoji Feed
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This simple Astro project generates an RSS feed for new custom emojis added to a Zulip instance. It fetches the emoji data from the Zulip server via API request, processes and caches the response, and creates an RSS feed from the response data for users to subscribe to.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+The goal is to allow members of the organization and moderators to stay updated on new emoji additions without the need to check the Zulip emoji list manually. And also it's kind of fun to see the new emojis. :)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Disclaimer:** This project makes (questionable) use of the experimental Astro [Content Layer API](https://astro.build/blog/astro-4140/#experimental-content-layer-api).
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+More documentation coming soon:tm: Also this isn't deployed anywhere at the moment.

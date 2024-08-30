@@ -1,0 +1,20 @@
+---
+// Copied from Astro's examples
+// https://github.com/withastro/astro/blob/21747e9eaee19bdfdaf9a220bfd084101a1b10da/examples/blog/src/components/FormattedDate.astro
+
+interface Props {
+  date: Date
+}
+
+const { date } = Astro.props
+---
+
+<time datetime={date.toISOString()}>
+  {
+    date.toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+</time>

@@ -1,0 +1,8 @@
+// Static tasks configuration.
+[
+  {
+    "label": "Development server",
+    "command": "./node_modules/.bin/astro dev",
+    "use_new_terminal": true
+  }
+]
