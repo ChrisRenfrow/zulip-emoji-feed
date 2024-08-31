@@ -1,12 +1,17 @@
 ---
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
 import EmojiCard from '../components/EmojiCard.astro'
 import EasySelectField from '../components/EasySelectField.astro'
 
 const title = 'Zulip Custom Emoji Feed'
 const org_name = 'RC'
 
-const emojis = (await getCollection('emojis', ({ data }) => !data.deactivated))
+const emoji = (
+  (await getCollection(
+    'emoji',
+    ({ data }: CollectionEntry<'emoji'>) => !data.deactivated,
+  )) as CollectionEntry<'emoji'>[]
+)
   .slice(-50)
   .sort((a, b) => Number(b.data.id) - Number(a.data.id))
 ---
@@ -27,17 +32,17 @@ const emojis = (await getCollection('emojis', ({ data }) => !data.deactivated))
           <h3 class="text-gray-800 text-2xl">for {org_name}</h3>
         </div>
         <p class="text-xl">
-          This site hosts an RSS feed containing the 50 latest custom emojis to
+          This site hosts an RSS feed containing the 50 latest custom emoji to
           have been added to {org_name}'s Zulip instance. To get notified of new
-          emojis, use your favorite RSS reader or bot integration to subscribe
-          to the url below.
+          emoji, use your favorite RSS reader or bot integration to subscribe to
+          the url below.
         </p>
         <EasySelectField value={`${Astro.site}/feed.xml`} />
       </div>
       <div>
         <h2 class="text-3xl pb-4 font-bold">Gallery</h2>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {emojis.map((emoji) => <EmojiCard {emoji} />)}
+          {emoji.map((emoji) => <EmojiCard {emoji} />)}
         </div>
       </div>
     </div>

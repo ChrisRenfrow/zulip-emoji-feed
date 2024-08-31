@@ -1,6 +1,6 @@
-import { defineCollection, z} from "astro:content";
+import { defineCollection, z } from 'astro:content'
 
-import fetchData from '../scripts/fetchData';
+import fetchData from '../scripts/fetchData'
 
 const emojiCollection = defineCollection({
   loader: fetchData,
@@ -11,10 +11,9 @@ const emojiCollection = defineCollection({
     still_url: z.string().url().nullable(),
     deactivated: z.boolean(),
     author_id: z.number(),
-    first_seen: z.string().datetime(),
-  })
+  }),
 })
 
 export const collections = {
-  'emojis': emojiCollection,
+  emoji: emojiCollection,
 }
