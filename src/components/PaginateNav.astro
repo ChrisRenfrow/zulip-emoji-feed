@@ -1,0 +1,37 @@
+---
+import type { Page, PaginateOptions } from 'astro'
+
+interface Props {
+  page: Page
+}
+
+const { page } = Astro.props
+---
+
+<div class="text-xl flex flex-row justify-between items-center">
+  {
+    page.url.prev ? (
+      <a class="p-8 bg-blue-300 rounded-2xl" href={page.url.prev}>
+        &larr; Prev
+      </a>
+    ) : (
+      <span class="p-8 bg-gray-300 rounded-2xl cursor-not-allowed">
+        &larr; Prev
+      </span>
+    )
+  }
+  <div>
+    {page.currentPage} of {page.lastPage}
+  </div>
+  {
+    page.url.next ? (
+      <a class="p-8 bg-blue-300 rounded-2xl" href={page.url.next}>
+        Next &rarr;
+      </a>
+    ) : (
+      <span class="p-8 bg-gray-300 rounded-2xl cursor-not-allowed">
+        Next &rarr;
+      </span>
+    )
+  }
+</div>

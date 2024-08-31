@@ -1,0 +1,32 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import EmojiCard from '@components/EmojiCard.astro'
+import type { Page, PaginateFunction, PaginateOptions } from 'astro'
+import PaginateNav from '@components/PaginateNav.astro'
+
+interface Props {
+  page: Page
+}
+
+export async function getStaticPaths({ paginate }) {
+  const allEmoji = (
+    await getCollection(
+      'emoji',
+      ({ data }: CollectionEntry<'emoji'>) => !data.deactivated,
+    )
+  ).reverse() as CollectionEntry<'emoji'>
+
+  return paginate(allEmoji, { pageSize: 50 })
+}
+
+const { page } = Astro.props
+---
+
+<BaseLayout>
+  <PaginateNav {page} />
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 py-8">
+    {page.data.map((emoji) => <EmojiCard emoji={emoji} />)}
+  </div>
+  <PaginateNav {page} />
+</BaseLayout>

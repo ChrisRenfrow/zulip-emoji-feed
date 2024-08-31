@@ -1,0 +1,35 @@
+---
+import EasySelectField from '@components/EasySelectField.astro'
+
+interface Props {
+  title: string
+}
+
+import siteInfo from 'src/data/site_info'
+
+const { title = siteInfo.title } = Astro.props
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>
+      {title}
+    </title>
+  </head>
+  <body class="my-10 md:my-20 md:w-2/3 px-5 md:px-0 mx-auto">
+    <div class="flex flex-col">
+      <div class="flex flex-col space-y-6 pb-10 md:pb-20">
+        <div class="pb-5">
+          <h1 class="text-4xl pb-2 font-bold">{title}</h1>
+        </div>
+      </div>
+      <div>
+        <slot />
+      </div>
+    </div>
+  </body>
+</html>
