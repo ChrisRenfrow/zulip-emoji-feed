@@ -1,6 +1,11 @@
 ---
 import { getCollection } from 'astro:content'
 import EmojiCard from './EmojiCard.astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  emoji: CollectionEntry<'emoji'>[]
+}
 
 const { emoji } = Astro.props
 ---

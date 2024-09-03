@@ -35,6 +35,8 @@ const page: Page = {
     current: `/page/${currentPage}`,
     prev: currentPage > 1 ? `/page/${currentPage - 1}` : undefined,
     next: currentPage < totalPages ? `/page/${currentPage + 1}` : undefined,
+    first: `/page/1`,
+    last: `/page/${totalPages}`,
   },
 }
 ---
