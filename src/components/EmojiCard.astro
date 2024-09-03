@@ -9,13 +9,22 @@ interface Props {
 const { emoji } = Astro.props as Props
 ---
 
-<div
-  class="p-2 bg-gray-100 w-80 h-40 rounded-md flex flex-row content-center justify-center"
->
-  <img class="p-3 m-auto grow" src={emoji.data.source_url} />
-  <div class="m-auto flex flex-col">
-    <EasySelectField value={`:${emoji.data.name}:`} icon={false} />
-    <div>id: <span>{emoji.data.id}</span></div>
-    <div>author: <span>{emoji.data.author_id}</span></div>
+<div class="card relative group bg-base-200 w-32 h-32">
+  <img
+    class="p-3 m-auto w-full h-full object-contain"
+    src={emoji.data.source_url}
+  />
+  <div
+    class="absolute inset-0 bg-base-100 bg-opacity-90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center"
+  >
+    <EasySelectField
+      value={`:${emoji.data.name}:`}
+      tooltipText={`:${emoji.data.name}:\n(click to copy to clipboard)`}
+    />
+    <div><span class="font-bold">id:</span> <span>{emoji.data.id}</span></div>
+    <div>
+      <span class="font-bold">author:</span>
+      <span>{emoji.data.author_id}</span>
+    </div>
   </div>
 </div>

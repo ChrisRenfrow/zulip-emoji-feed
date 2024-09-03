@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content'
+import EmojiCard from './EmojiCard.astro'
+
+const { emoji } = Astro.props
+---
+
+<div
+  class="grid grid-cols-3 place-items-center md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8 gap-4"
+>
+  {emoji.map((emoji) => <EmojiCard {emoji} />)}
+</div>

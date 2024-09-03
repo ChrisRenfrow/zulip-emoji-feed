@@ -1,9 +1,9 @@
-# Zulip Emoji Feed
+# Zulip Emoji Feed (RC edition)
 
-This simple Astro project generates an RSS feed for new custom emojis added to a Zulip instance. It fetches the emoji data from the Zulip server via API request, processes and caches the response, and creates an RSS feed from the response data for users to subscribe to.
+This simple Astro project presents the RC Zulip custom emoji submitted by the community as a nice little gallery.
 
-The goal is to allow members of the organization and moderators to stay updated on new emoji additions without the need to check the Zulip emoji list manually. And also it's kind of fun to see the new emojis. :)
+Idly browse custom emoji at your leisure! Discover new custom emoji to use in very niche contexts!
 
-**Disclaimer:** This project makes (questionable) use of the experimental Astro [Content Layer API](https://astro.build/blog/astro-4140/#experimental-content-layer-api).
+In order to view the emoji, one will need to authenticate with the RC's OAuth provider. This is because the emoji's submitter/author is displayed alongside their submission, and also some emoji explicitly have PII (Personally Identifiable Information) in their name and content.
 
-More documentation coming soon:tm: Also this isn't deployed anywhere at the moment.
+Originally this project set out to provide an RSS feed of the latest emojis for use in other integrations (a RSS Zulip bot, perhaps), but this has been put on hold until I can figure out a way to do this securely, or perhaps indefinitely!

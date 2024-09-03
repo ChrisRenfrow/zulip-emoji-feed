@@ -1,35 +1,56 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import { getSession } from 'auth-astro/server'
 
-import { getCollection, type CollectionEntry } from 'astro:content'
-import EmojiCard from '../components/EmojiCard.astro'
-import EasySelectField from '../components/EasySelectField.astro'
-
+const session = await getSession(Astro.request)
 import siteInfo from '../data/site_info'
 const { title, orgName } = siteInfo
-
-const emoji = (
-  (await getCollection(
-    'emoji',
-    ({ data }: CollectionEntry<'emoji'>) => !data.deactivated,
-  )) as CollectionEntry<'emoji'>[]
-)
-  .reverse()
-  .slice(-50)
 ---
 
 <BaseLayout {title}>
-  <p class="text-xl">
-    This site hosts an RSS feed containing the 50 latest custom emoji to have
-    been added to {orgName}'s Zulip instance. To get notified of new emoji, use
-    your favorite RSS reader or bot integration to subscribe to the url below.
-  </p>
-  <EasySelectField value={`${Astro.site}/feed.xml`} />
-  <div>
-    <h2 class="text-3xl pb-4 font-bold">Gallery</h2>
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      {emoji.map((emoji) => <EmojiCard {emoji} />)}
-    </div>
-    <a class="bg-blue-200 p-5 rounded-sm" href="/page/2">See more!</a>
+  <div class="flex flex-col space-y-5 text-xl">
+    <p class="">
+      This simple Astro project presents the RC Zulip custom emoji submitted by
+      the community as a nice little gallery.
+    </p>
+    <p>
+      Idly browse custom emoji at your leisure! Discover new custom emoji to use
+      in very niche contexts!
+    </p>
+    {
+      session ? (
+          <p>You're logged in!</p>
+          <a href="/page/1" class="btn btn-primary text-xl">Enjoy the emoji!</a>
+          <a id="logout" class="btn btn-error text-xl">
+            Log-out
+            </a>
+      ) : (
+          <p class="dark:text-purple-200 text-purple-700">In order to view the emoji, you will need to login.</p>
+          <a id="login" class="btn bg-green-400 text-secondary-content text-xl">
+            Login with RC
+          </a>
+          <div class="collapse collapse-arrow">
+            <input type="checkbox" class="peer" />
+            <div class="collapse-title italic text-lg bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 pl-3 border-l-4 pb-1">
+              Why do I need to login?
+            </div>
+            <div class="collapse-content bg-gray-50 dark:bg-gray-800 border-l-4 text-lg">
+              <hr class="py-2" />
+              Because folks generally upload emoji with the assumption that they
+              are private to the community, and there's a few instances of PII
+              (Personally Identifiable Information) embedded in the emoji
+              themselves. It's just best to err on the side of caution!
+            </div>
+          </div>
+      )
+    }
   </div>
 </BaseLayout>
+
+<script>
+  const { signIn, signOut } = await import('auth-astro/client')
+  const loginButton = document.querySelector('#login') as HTMLButtonElement
+  const logoutButton = document.querySelector('#logout') as HTMLButtonElement
+  if (loginButton !== null)  loginButton.onclick = () => signIn('recurse-center')
+  if (logoutButton !== null)  logoutButton.onclick = () => signOut()
+</script>

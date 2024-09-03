@@ -8,30 +8,26 @@ interface Props {
 const { page } = Astro.props
 ---
 
-<div class="text-xl flex flex-row justify-between items-center">
+<div class="join mx-auto">
   {
     page.url.prev ? (
-      <a class="p-8 bg-blue-300 rounded-2xl" href={page.url.prev}>
+      <a class="join-item btn" href={page.url.prev}>
         &larr; Prev
       </a>
     ) : (
-      <span class="p-8 bg-gray-300 rounded-2xl cursor-not-allowed">
-        &larr; Prev
-      </span>
+      <span class="join-item btn btn-disabled">&larr; Prev</span>
     )
   }
-  <div>
+  <div class="join-item btn btn-neutral cursor-default">
     {page.currentPage} of {page.lastPage}
   </div>
   {
     page.url.next ? (
-      <a class="p-8 bg-blue-300 rounded-2xl" href={page.url.next}>
+      <a class="join-item btn" href={page.url.next}>
         Next &rarr;
       </a>
     ) : (
-      <span class="p-8 bg-gray-300 rounded-2xl cursor-not-allowed">
-        Next &rarr;
-      </span>
+      <span class="join-item btn cursor-not-allowed">Next &rarr;</span>
     )
   }
 </div>

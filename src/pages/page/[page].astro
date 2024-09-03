@@ -2,31 +2,47 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import EmojiCard from '@components/EmojiCard.astro'
-import type { Page, PaginateFunction, PaginateOptions } from 'astro'
+import type { Page } from 'astro'
 import PaginateNav from '@components/PaginateNav.astro'
+import EmojiGallery from '@components/EmojiGallery.astro'
 
-interface Props {
-  page: Page
+export const prerender = false
+
+const pageSize = 64
+const currentPage = parseInt(Astro.params.page || '1')
+
+const allEmoji = (
+  await getCollection(
+    'emoji',
+    ({ data }: CollectionEntry<'emoji'>) => !data.deactivated,
+  )
+).reverse() as CollectionEntry<'emoji'>[]
+
+const totalPages = Math.ceil(allEmoji.length / pageSize)
+const start = (currentPage - 1) * pageSize
+const end = start + pageSize
+const currentEmoji = allEmoji.slice(start, end)
+
+const page: Page = {
+  data: currentEmoji,
+  start: start + 1,
+  end: Math.min(end, allEmoji.length),
+  size: pageSize,
+  total: allEmoji.length,
+  currentPage: currentPage,
+  lastPage: totalPages,
+  url: {
+    current: `/page/${currentPage}`,
+    prev: currentPage > 1 ? `/page/${currentPage - 1}` : undefined,
+    next: currentPage < totalPages ? `/page/${currentPage + 1}` : undefined,
+  },
 }
-
-export async function getStaticPaths({ paginate }) {
-  const allEmoji = (
-    await getCollection(
-      'emoji',
-      ({ data }: CollectionEntry<'emoji'>) => !data.deactivated,
-    )
-  ).reverse() as CollectionEntry<'emoji'>
-
-  return paginate(allEmoji, { pageSize: 50 })
-}
-
-const { page } = Astro.props
 ---
 
 <BaseLayout>
-  <PaginateNav {page} />
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4 py-8">
-    {page.data.map((emoji) => <EmojiCard emoji={emoji} />)}
+  <div class="flex flex-col space-y-5">
+    <PaginateNav page={page} />
+    <EmojiGallery emoji={page.data} />
+    <PaginateNav page={page} />
   </div>
-  <PaginateNav {page} />
 </BaseLayout>
