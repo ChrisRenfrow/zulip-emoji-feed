@@ -4,37 +4,41 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-async function fetchData() {
-  const filePath = path.join(process.cwd(), 'src', 'data', 'emoji.json')
+let kv
+if (process.env.VERCEL) {
+  kv = (await import('@vercel/kv')).kv
+}
 
+async function getCachedData() {
   let cachedData = []
-  try {
-    const cacheContents = await fs.readFile(filePath, 'utf-8')
-    cachedData = JSON.parse(cacheContents)
-  } catch (error) {
-    // File doesn't exist or is invalid, start with empty object
-  }
+  let lastFetchTime = 0
 
-  try {
-    const stats = await fs.stat(filePath)
-    const fileAge = Date.now() - stats.mtime.getTime()
-
-    if (fileAge < 3600000) {
-      // 1 hour in milliseconds
-      console.log('Cached emoji data is less than 1 hour old. Skipping fetch.')
-      return cachedData
+  if (process.env.VERCEL) {
+    cachedData = (await kv.get('emojiCache')) || []
+    lastFetchTime = (await kv.get('lastFetchTime')) || 0
+  } else {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'emoji.json')
+    try {
+      const cacheContents = await fs.readFile(filePath, 'utf-8')
+      cachedData = JSON.parse(cacheContents)
+      const stats = await fs.stat(filePath)
+      lastFetchTime = stats.mtime.getTime()
+    } catch (error) {
+      // File doesn't exist or is invalid, start with empty array
     }
-  } catch (error) {
-    // File doesn't exist, proceed with fetching
   }
 
+  return { cachedData, lastFetchTime }
+}
+
+async function fetchZulipEmoji() {
   if (
     !process.env.ZULIP_API_URL ||
     !process.env.ZULIP_API_KEY ||
     !process.env.ZULIP_EMAIL
   ) {
     throw Error(
-      'Missing ZULIP_API_URL, ZULIP_API_KEY, or ZULIP_EMAIL. Check .env file and try again.',
+      'Missing ZULIP_API_URL, ZULIP_API_KEY, or ZULIP_EMAIL. Check environment variables and try again.',
     )
   }
 
@@ -58,20 +62,41 @@ async function fetchData() {
   }
 
   let responseData = (await response.json()).emoji
+  return Array.from(Object.values(responseData))
+}
 
-  responseData = Array.from(Object.values(responseData))
+async function updateCache(updatedData, currentTime) {
+  if (process.env.VERCEL) {
+    await kv.set('emojiCache', updatedData)
+    await kv.set('lastFetchTime', currentTime)
+  } else {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'emoji.json')
+    await fs.writeFile(filePath, JSON.stringify(updatedData, null, 2))
+  }
+}
 
-  // WARNING: This assumes that the emoji will always be returned in sequence
-  // (which seems to be the case, right now)
+async function fetchData() {
+  const { cachedData, lastFetchTime } = await getCachedData()
+  const currentTime = Date.now()
+  const oneHour = 3600000 // 1 hour in milliseconds
+
+  if (cachedData.length > 0 && currentTime - lastFetchTime < oneHour) {
+    console.log('Cached emoji data is less than 1 hour old. Skipping fetch.')
+    return cachedData
+  }
+
+  const responseData = await fetchZulipEmoji()
   const newEmojiCount = responseData.length - cachedData.length
+
   if (newEmojiCount === 0) {
     console.log('No change, returning cached data')
     return cachedData
   }
-  // Concatenate new emoji to the existing data
+
   const updatedData = cachedData.concat(responseData.slice(-newEmojiCount))
 
-  await fs.writeFile(filePath, JSON.stringify(updatedData, null, 2))
+  await updateCache(updatedData, currentTime)
+
   console.log(
     `fetchData: Emoji data fetched, updated, and cached. Added ${newEmojiCount} new emoji`,
   )
