@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/update-emoji",
+      "schedule": "0 5 * * *"
+    }
+  ]
+}
